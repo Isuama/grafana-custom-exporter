@@ -1,16 +1,31 @@
-apiVersion: networking.k8s.io/v1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: 100m
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "120"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.org/proxy-connect-timeout: 60s
+    nginx.org/proxy-read-timeout: 60s
   name: my-ingress
 spec:
   rules:
-  - host: my-nginx.com
+  - host: my-grafana.com
     http:
       paths:
-      - pathType: Prefix
-        path: "/"
-        backend:
-          service:
-            name: my-nginx
-            port:
-              number: 80
+      - backend:
+          serviceName: grafana
+          servicePort: 3000
+        path: /
+        #  - host: my-nginx.com
+        #    http:
+        #      paths:
+        #      - backend:
+        #          serviceName: my-nginx
+        #          servicePort: 80
+        #path: /
