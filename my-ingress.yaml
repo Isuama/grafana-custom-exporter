@@ -1,4 +1,5 @@
-apiVersion: networking.k8s.io/v1beta1
+#apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
@@ -22,10 +23,10 @@ spec:
           serviceName: grafana
           servicePort: 3000
         path: /
-        #  - host: my-nginx.com
-        #    http:
-        #      paths:
-        #      - backend:
-        #          serviceName: my-nginx
-        #          servicePort: 80
-        #path: /
+  - host: my-nginx.com
+    http:
+      paths:
+      - backend:
+          serviceName: my-nginx
+          servicePort: 80
+        path: /
