@@ -25,6 +25,19 @@ spec:
             requests:
               cpu: 250m
               memory: 750Mi
+          volumeMounts:
+            - mountPath: /var/lib/grafana
+              name: grafana-storage
+            - mountPath: /etc/grafana/provisioning/datasources
+              name: grafana-datasource
+              readOnly: false
+      volumes:
+        - name: grafana-storage
+          emptyDir: {}
+        - name: grafana-datasource
+          configMap:
+              defaultMode: 420
+              name: grafana-datasource
 ---
 apiVersion: v1
 kind: Service
@@ -32,7 +45,7 @@ metadata:
   name: grafana
 spec:
   ports:
-    - port: 3000 # me changed from 3000 to 80
+    - port: 80 # me changed from 3000 to 80
       targetPort: 3000 # me added
   selector:
     app: grafana
