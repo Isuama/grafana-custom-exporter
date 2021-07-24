@@ -34,3 +34,13 @@ spec:
             name: prometheus
             port:
               number: 80
+  - host: "my-exporter.com"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: py-custom-exporter
+            port:
+              number: 9998

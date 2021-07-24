@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app.kubernetes.io/component: exporter
+    app.kubernetes.io/name: py-custom-exporter
+  name: py-custom-exporter
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: exporter
+      app.kubernetes.io/name: py-custom-exporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: exporter
+        app.kubernetes.io/name: py-custom-exporter
+    spec:
+      containers:
+      - name: py-custom-exporter
+        image: custome-python-exporter:1.0
+        env:
+        - name: UPDATE_PERIOD
+          value: "30"
+        ports:
+          - containerPort: 9998
+            protocol: TCP
+        resources:
+          limits:
+            cpu: 250m
+            memory: 180Mi
+          requests:
+            cpu: 102m
+            memory: 180Mi
+        volumeMounts:
+        - mountPath: /rootfs
+          mountPropagation: HostToContainer
+          name: sys
+          readOnly: true
+      volumes:
+      - hostPath:
+          path: /
+        name: sys
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: py-custom-exporter
+spec:
+  selector:
+      app.kubernetes.io/component: exporter
+      app.kubernetes.io/name: py-custom-exporter
+  ports:
+  - name: py-custom-exporter
+    protocol: TCP
+    port: 9998
+    targetPort: 9998

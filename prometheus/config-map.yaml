@@ -7,15 +7,15 @@ metadata:
 data:
   prometheus.rules: |-
     groups:
-    - name: demo alert
+    - name: processalert
       rules:
-      - alert: High Pod Memory
-        expr: sum(container_memory_usage_bytes) > 1
-        for: 1m
+      - alert: Towering Processes
+        expr: system_usage{resource_type="Processes"} > 160
+        for: 5s
         labels:
           severity: slack
         annotations:
-          summary: High Memory Usage
+          summary: High Listening Processes
   prometheus.yml: |-
     global:
       scrape_interval: 5s
@@ -27,10 +27,10 @@ data:
       - scheme: http
         static_configs:
         - targets:
-          - "alertmanager.monitoring.svc:9093"
+          - "alertmanager"
 
     scrape_configs:
-      - job_name: 'node-exporter'
+      - job_name: 'node'
         scrape_interval: 5s
         static_configs:
-          - targets: ['node-exporter']
+                - targets: ['py-custom-exporter:9998']
