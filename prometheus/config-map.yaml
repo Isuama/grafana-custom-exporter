@@ -13,9 +13,10 @@ data:
         expr: system_usage{resource_type="Processes"} > 160
         for: 5s
         labels:
-          severity: slack
+          severity: critical
         annotations:
           summary: High Listening Processes
+          description: Number of processes are towering on the node
   prometheus.yml: |-
     global:
       scrape_interval: 5s
@@ -33,4 +34,16 @@ data:
       - job_name: 'node'
         scrape_interval: 5s
         static_configs:
-                - targets: ['py-custom-exporter:9998']
+        - targets: 
+          - 10.244.1.77:9998
+          - 10.244.2.42:9998
+        relabel_configs:
+        - source_labels: [__address__]
+          regex: '10.244.1.*'
+          target_label: instance
+          replacement: worker-1
+        - source_labels: [__address__]
+          regex: '10.244.2.*'
+          target_label: instance
+          replacement: worker-2
+       
