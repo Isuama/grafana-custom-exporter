@@ -1,3 +1,4 @@
+
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -16,6 +17,6 @@ data:
     receivers:
     - name: 'slack-notifications'
       slack_configs:
-      - api_url: 'https://hooks.slack.com/services/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'
-        channel: '#custom-monitor'
+      - api_url: 'https://hooks.slack.com/services/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'
+        channel: '#alertmanager'
         send_resolved: true

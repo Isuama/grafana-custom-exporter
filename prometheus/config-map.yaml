@@ -9,14 +9,22 @@ data:
     groups:
     - name: processalert
       rules:
-      - alert: Towering Processes
-        expr: system_usage{resource_type="Processes"} > 160
+      - alert: ToweringProcesses
+        expr: system_usage{instance="worker-1", job="node", resource_type="Processes"} > 160
         for: 5s
         labels:
           severity: critical
         annotations:
           summary: 'High Listening Processes on {{ $labels.instance }} '
-          description: Number of processes are towering on the node
+          description: 'Number of processes are towering on the node'
+      - alert: InstanceDown
+        expr: up == 0
+        for: 5s
+        labels:
+          severity: critical
+        annotations:
+          summary: 'Instance {{ $labels.instance }} Down'
+          description: 'Instance Down'
   prometheus.yml: |-
     global:
       scrape_interval: 5s
@@ -28,15 +36,21 @@ data:
       - scheme: http
         static_configs:
         - targets:
-          - "alertmanager"
+          - 10.244.1.43:9093
 
     scrape_configs:
+      - job_name: 'worker'
+        scrape_interval: 5s
+        static_configs:
+        - targets:
+          - 10.244.1.44:9100
+          - 10.244.2.17:9100
       - job_name: 'node'
         scrape_interval: 5s
         static_configs:
         - targets: 
-          - 10.244.1.77:9998
-          - 10.244.2.42:9998
+          - 10.244.1.45:9998
+          - 10.244.2.18:9998
         relabel_configs:
         - source_labels: [__address__]
           regex: '10.244.1.*'

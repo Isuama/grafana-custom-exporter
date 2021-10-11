@@ -3,6 +3,7 @@ kind: Ingress
 metadata:
   name: monitoring-ingress
 spec:
+  ingressClassName: nginx
   rules:
   - host: "my-grafana.com"
     http:
@@ -44,3 +45,13 @@ spec:
             name: py-custom-exporter
             port:
               number: 9998
+  - host: "alertmanager.com"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: alertmanager
+            port:
+              number: 80
