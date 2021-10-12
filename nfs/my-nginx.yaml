@@ -12,12 +12,19 @@ spec:
       labels:
         run: my-nginx
     spec:
+      volumes:
+        - name: nginx-pv-storage
+          persistentVolumeClaim:
+            claimName: nfs-pvc
       containers:
       - name: my-nginx
         image: nginx
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
+        volumeMounts:
+        - mountPath: "/usr/share/nginx/html"
+          name: nginx-pv-storage
 
 ---
 apiVersion: v1

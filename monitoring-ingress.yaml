@@ -55,3 +55,13 @@ spec:
             name: alertmanager
             port:
               number: 80
+  - host: "my-hunter.com"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: my-hunter
+            port:
+              number: 80

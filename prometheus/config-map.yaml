@@ -10,7 +10,7 @@ data:
     - name: processalert
       rules:
       - alert: ToweringProcesses
-        expr: system_usage{instance="worker-1", job="node", resource_type="Processes"} > 160
+        expr: system_usage{resource_type="Processes"} > 160
         for: 5s
         labels:
           severity: critical
@@ -36,21 +36,14 @@ data:
       - scheme: http
         static_configs:
         - targets:
-          - 10.244.1.43:9093
+          - alertmanager
 
     scrape_configs:
       - job_name: 'worker'
         scrape_interval: 5s
         static_configs:
         - targets:
-          - 10.244.1.44:9100
-          - 10.244.2.17:9100
-      - job_name: 'node'
-        scrape_interval: 5s
-        static_configs:
-        - targets: 
-          - 10.244.1.45:9998
-          - 10.244.2.18:9998
+          - py-custom-exporter:9998
         relabel_configs:
         - source_labels: [__address__]
           regex: '10.244.1.*'

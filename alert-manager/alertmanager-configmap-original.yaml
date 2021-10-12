@@ -8,8 +8,8 @@ data:
     global:
     templates:
     - '/etc/alertmanager/*.tmpl'
-    routes:
-    - receiver: 'webhook-notifications'
+    route:
+      receiver: 'webhook-notifications'
       group_by: ['alertname', 'priority']
       group_wait: 10s
       repeat_interval: 5s

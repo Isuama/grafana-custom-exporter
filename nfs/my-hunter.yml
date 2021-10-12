@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-hunter
+spec:
+  selector:
+    matchLabels:
+      run: my-hunter
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: my-hunter
+    spec:
+      volumes:
+        - name: nginx-pv-storage
+          persistentVolumeClaim:
+            claimName: nfs-pvc
+      containers:
+      - name: my-hunter
+        image: amarathunga/log-hunter:1.1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8082
+        volumeMounts:
+        - mountPath: "/usr/share/hunter-alert"
+          name: nginx-pv-storage
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-hunter
+  labels:
+    run: my-hunter
+spec:
+  ports:
+  - port: 80
+    targetPort: 8082
+    protocol: TCP
+  selector:
+    run: my-hunter
+
